@@ -1,5 +1,15 @@
 import random
 class Character:
+    '''
+    Purpose: An object in this class represents an Item, a product of a store.
+    Instance variables: self.store = the store in which the item is from
+                        self.name = the name of the item
+                        self.price = the price of the item
+                        self.category = where on the body the item is worn
+    Methods: __init__ = a constructor to initialize instance variables
+             __str__ = a method that returns a string that contains the name, category, and price of an item
+             __lt__ = a method that determines if one item is or is not less expensive than another item
+    '''
     def __init__(self, name, color, num_tasks):
         tasks = []
         possible_tasks = ['Stabilize drill', 'Calibrate distributor',
@@ -28,6 +38,16 @@ class Character:
         return "Character"
     
 class Crewperson(Character):
+    '''
+    Purpose: An object in this class represents an Item, a product of a store.
+    Instance variables: self.store = the store in which the item is from
+                        self.name = the name of the item
+                        self.price = the price of the item
+                        self.category = where on the body the item is worn
+    Methods: __init__ = a constructor to initialize instance variables
+             __str__ = a method that returns a string that contains the name, category, and price of an item
+             __lt__ = a method that determines if one item is or is not less expensive than another item
+    '''
     def get_identity(self):
         return "Crewperson"
         
@@ -45,6 +65,16 @@ class Crewperson(Character):
         
         
 class Pretender(Character):
+    '''
+    Purpose: An object in this class represents an Item, a product of a store.
+    Instance variables: self.store = the store in which the item is from
+                        self.name = the name of the item
+                        self.price = the price of the item
+                        self.category = where on the body the item is worn
+    Methods: __init__ = a constructor to initialize instance variables
+             __str__ = a method that returns a string that contains the name, category, and price of an item
+             __lt__ = a method that determines if one item is or is not less expensive than another item
+    '''
     def __init__(self, name, color, num_tasks):
         Character.__init__(self,name,color,num_tasks)
         self.role = "Evil"
@@ -57,6 +87,16 @@ class Pretender(Character):
         print(self.name + " eliminated " + target.name)
 
 class Sheriff(Crewperson):
+    '''
+    Purpose: An object in this class represents an Item, a product of a store.
+    Instance variables: self.store = the store in which the item is from
+                        self.name = the name of the item
+                        self.price = the price of the item
+                        self.category = where on the body the item is worn
+    Methods: __init__ = a constructor to initialize instance variables
+             __str__ = a method that returns a string that contains the name, category, and price of an item
+             __lt__ = a method that determines if one item is or is not less expensive than another item
+    '''
     def get_identity(self):
         return "Sheriff"
     
@@ -66,6 +106,16 @@ class Sheriff(Crewperson):
             print(self.name + " eliminated " + target.name)
         
 class Game:
+    '''
+    Purpose: An object in this class represents an Item, a product of a store.
+    Instance variables: self.store = the store in which the item is from
+                        self.name = the name of the item
+                        self.price = the price of the item
+                        self.category = where on the body the item is worn
+    Methods: __init__ = a constructor to initialize instance variables
+             __str__ = a method that returns a string that contains the name, category, and price of an item
+             __lt__ = a method that determines if one item is or is not less expensive than another item
+    '''
     def __init__(self, player_list):
         self.player_list = player_list
     
@@ -111,7 +161,6 @@ class Game:
         for i in range(len(self.player_list)):
             if self.player_list[i].alive == True:
                 alive_list.append(self.player_list[i])
-                # add to dictionary
                 voting_dict[self.player_list[i].name] == 0
 
         for i in range(len(alive_list)):
