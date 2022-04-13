@@ -36,7 +36,13 @@ class Crewperson(Character):
             print(self.name + " has completed task: " + self.task_list[0])
             self.task_list.remove(self.task_list[0])
         elif len(self.task_list) == 1:
+            print(self.name + " has completed task: " + self.task_list[0])
+            self.task_list.remove(self.task_list[0])
+        elif len(self.task_list) == 0:
             print(self.name + " has completed all their tasks")
+        
+        return self.task_list
+        
         
 class Pretender(Character):
     def __init__(self, name, color, num_tasks):
@@ -64,13 +70,15 @@ class Game:
         self.player_list = player_list
     
     def check_winner(self):
-        tasks_left = 100
+        tasks_left = 0
         good_count = 0
         evil_count = 0
         dead_evil_count = 0
         dead_good_count = 0
+
         for i in range(len(self.player_list)):
-            tasks_left += len((self.player_list[i]).task_list)
+            if self.player_list[i].role == "Good":
+                tasks_left += len((self.player_list[i]).task_list)
 
             if self.player_list[i].role == "Evil":
                 evil_count += 1
@@ -88,51 +96,74 @@ class Game:
         elif (evil_count - dead_evil_count) >= (good_count - dead_good_count):
             print("Pretenders win!")
             return "P"
+
         else:
             return "-"
 
     def meeting(self):
-        # name_list = []
-        # for i in range(len(self.player_list)):
-        #     name_list.append(self.player_list[i].name)
-        #     self.player_list[i].name.vote_count = 0
-        # loser = name_list[0]
-        # for i in range(len(name_list)):
-        #     for j in range(len(name_list)):
-        #         vote = random.choice(name_list)
-        #         while vote == name_list[i] or self.player_list[j].alive == False:
-        #             vote = random.choice(name_list)
-        #         print(name_list[i] + " voted for " + vote)
-        #         self.player_list[i].name.vote_count += 1
-        #         break
-        # for j in range(len(name_list)):
-        #     if name_list[j].vote_count > loser.vote_count:
-        #         loser = self.player_list[j]
-        # print(loser + " was voted out and eliminated")
+        Tie = False
+        voting_dict = {}
+        alive_list = []
+
+        for i in range(len(self.player_list)):
+            voting_dict[self.player_list[i].name] = 0
+
+        for i in range(len(self.player_list)):
+            if self.player_list[i].alive == True:
+                alive_list.append(self.player_list[i])
+                # add to dictionary
+                voting_dict[self.player_list[i].name] == 0
+
+        for i in range(len(alive_list)):
+            if alive_list[i].alive == True:
+                vote = random.choice(alive_list)
+                while vote.name == alive_list[i].name:
+                    vote = random.choice(alive_list)
+                print(alive_list[i].name + " voted for " + vote.name)
+                voting_dict[vote.name] += 1
         
-        # for i in range(len(self.player_list)):
-        #     if self.player_list[i].name == loser:
-        #         self.player_list[i].alive = False
-            vote = random.choice(self.player_list)
-            while vote.alive == False:
-                vote = random.choice(self.player_list)
-            for i in range(len(self.player_list)):
-                if self.player_list[i].alive == True:
-                    print(self.player_list[i].name + " voted for " + vote.name)
-            print(vote.name + " was voted out and eliminated.")
+        loser_votes = max(voting_dict.values())
+
+        for i in range(len(alive_list)):
+            if voting_dict[alive_list[i].name] == loser_votes:
+                loser_name = alive_list[i].name
+                loser = alive_list[i]
+
+        for i in range(len(alive_list)):
+            if alive_list[i].name != loser_name:
+                if voting_dict[alive_list[i].name] == loser_votes:
+                    Tie = True
+                    break
+
+        if Tie == True:
+            print("Nobody was voted out.")
+        else:
+            print(loser_name + " was voted out and eliminated.")
+            loser.alive = False
+
+            # vote = random.choice(self.player_list)
+            # while vote.alive == False:
+            #     vote = random.choice(self.player_list)
+            # for i in range(len(self.player_list)):
+            #     if self.player_list[i].alive == True:
+            #         print(self.player_list[i].name + " voted for " + vote.name)
+            # print(vote.name + " was voted out and eliminated.")
+            # vote.alive = False
+            
         
         
     def play_game(self):
-        while self.check_winner() == "-":
+        keep_playing = True
+        while keep_playing == True:
             for i in range(len(self.player_list)):
                 if self.player_list[i].role == "Good":
                     for j in range(random.randrange(1,4)):
-                        self.player_list[i].complete_task()
+                         self.player_list[i].complete_task()
             for i in range(len(self.player_list)):
-                if self.player_list[i].role == "Evil" and self.player_list[i].alive == True:
-                    p_choice = random.choice(self.player_list)
-                    if p_choice.role == "Good" and p_choice.alive == True:
-                         self.player_list[i].eliminate(p_choice)
+                 if self.player_list[i].role == "Evil" and self.player_list[i].alive == True:
+                      p_choice = random.choice(self.player_list)
+                      if p_choice.role == "Good" and p_choice.alive == True:
+                          self.player_list[i].eliminate(p_choice)
             for i in range(len(self.player_list)):
                 if self.player_list[i].get_identity() == "Sheriff" and self.player_list[i].alive == True:
                     s_choice = random.choice(self.player_list)
@@ -140,25 +171,26 @@ class Game:
                         self.player_list[i].encounter(s_choice)
             if self.check_winner() == "-":
                 self.meeting()
-                self.check_winner()
+                if self.check_winner() == "-":
+                    keep_playing = True
+                else:
+                    keep_playing = False
+            else:
+                keep_playing = False
+        
+
             
         
 g = Game([
-        Pretender('Rachel', 'Blue', 6),
-        Crewperson('Fatima', 'Orange', 6),
-        Pretender('Emily', 'Red', 6),
-        Crewperson('Nakul', 'Indigo', 6),
-        Crewperson('Demond', 'Pink', 6),
-        Crewperson('Eric', 'Yellow', 6),
-        Crewperson('Chris', 'Teal', 6),
-        Crewperson('Aishwarya', 'Brown', 6),
-        Crewperson('Athreyi', 'Purple', 6),
-        Sheriff('Adrika', 'White', 6)])
+        Pretender('James Joyce', 'Blue', 4),
+        Crewperson('Nate', 'Orange', 4),
+        Pretender('Markov', 'Red', 4),
+        Crewperson('Fanatical', 'Indigo', 4),
+        Crewperson('Nebula', 'Black', 4),
+        Sheriff('basicbot', 'White', 4)])
 
 
-
-
-
+g.play_game()
 
 
 
